@@ -178,31 +178,6 @@ function animate() {
     }
   }
   requestAnimationFrame(animate);
-  let gameState = undefined;
-  function animate() {
-    if (gameState) {
-      const playerScores = gameState.players.map((player) => player.score);
-      //only rerender scoreboard if values have changed
-      if (
-        prevPlayerScores === undefined ||
-        playerScores.some(
-          (playerScore, i) => playerScore !== prevPlayerScores[i]
-        )
-      ) {
-        drawScoreBoard(gameState.players);
-      }
-      prevPlayerScores = playerScores;
-
-      clearCanvas();
-      for (const player of gameState.players.filter(
-        (player) => player.playing
-      )) {
-        drawPlayer(player);
-      }
-    }
-    requestAnimationFrame(animate);
-  }
-  animate();
 }
 animate();
 
