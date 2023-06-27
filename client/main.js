@@ -21,6 +21,7 @@ let id = undefined;
 let initalized = false;
 let lastUserName = undefined;
 let prevPlayerScores = undefined;
+let gameState = { players: [] };
 
 const colors = ['#DB488B', '#1F1A70', '#1A0E3E', '#3337C0', '#D854C2'];
 
@@ -94,6 +95,8 @@ function drawPlayer(player) {
   const liveGap = 5;
   const liveWidth = 5;
   //rendering the player
+  player.x += player.dx;
+  player.y += player.dy;
   ctx.fillStyle = player.color;
   ctx.beginPath();
   ctx.arc(realWidth, realHeight, player.radius * width, 0, Math.PI * 2);
@@ -158,29 +161,31 @@ function drawScoreBoard(players) {
   scoreboard.append(...scoreboardItems);
 }
 
-function animate(state) {
-  const playerScores = state.players.map((player) => player.score);
+function animate() {
+  const playerScores = gameState.players.map((player) => player.score);
   //only rerender scoreboard if values have changed
   if (
     prevPlayerScores === undefined ||
     playerScores.some((playerScore, i) => playerScore !== prevPlayerScores[i])
   ) {
-    drawScoreBoard(state.players);
+    drawScoreBoard(gameState.players);
   }
   prevPlayerScores = playerScores;
 
   clearCanvas();
-  for (const player of state.players.filter((player) => player.playing)) {
+  for (const player of gameState.players.filter((player) => player.playing)) {
     drawPlayer(player);
   }
+  requestAnimationFrame(animate);
 }
 
 function handleGameOver() {
   modal.style.display = 'flex';
 }
+animate();
 
 socket.on('game-state', (state) => {
-  animate(state);
+  gameState = state;
 });
 
 socket.on('id', (ourId) => (id = ourId));
