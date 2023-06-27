@@ -130,3 +130,7 @@ div > :has(#mousecontrol-input) {
   height: 15px;
   cursor: pointer;
 }
+
+#username-label {
+  display: flex;
+}
