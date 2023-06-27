@@ -1,0 +1,15 @@
+{
+  "name": "canvas-boilerplate",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "fullBuild": "vite build && rm -r ../server/dist && cp -r ./dist ../server/dist"
+  },
+  "devDependencies": {
+    "vite": "^4.2.0"
+  }
+}

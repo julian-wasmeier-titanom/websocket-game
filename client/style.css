@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400&display=swap');
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #121212;
+  color: white;
+}
+
+#modal {
+  position: absolute;
+  box-shadow: 7px 7px 0px rgba(255, 255, 255, 0.2);
+
+  width: 20rem;
+  height: 13rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Bebas Neue', sans-serif;
+  background-color: #6e6262;
+  color: white;
+}
+
+.input-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+}
+
+#username-input {
+  margin-left: 10px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 25px;
+  padding-left: 10px;
+}
+
+#play-button {
+  border: none;
+  background-color: rgb(58, 233, 42);
+  width: 80%;
+  flex: 0.8;
+  margin: 10px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+}
+
+#color-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.color {
+  width: 50px;
+  height: 50px;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.color:checked {
+  border: 4px solid rgb(126, 126, 126);
+}
+
+#scoreboard {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  height: 250px;
+  width: 200px;
+  border: 2px solid rgb(230, 230, 230);
+  box-shadow: 7px 7px 0px rgba(255, 255, 255, 0.2);
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  background-color: rgba(218, 205, 205, 0.247);
+  overflow: hidden;
+}
+
+.scoreboard-item {
+  font-family: 'Bebas Neue', sans-serif;
+  height: 50px;
+  font-size: 30px;
+  border-bottom: 3px solid rgb(51, 49, 49);
+  padding-left: 10px;
+}
