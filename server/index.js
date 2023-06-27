@@ -22,11 +22,12 @@ let fps = 60;
 let players = [];
 let gameState = { players };
 let bulletInterval = 100;
-let bulletVelocity = 0.01 * (fps / tickRate);
+let bulletVelocity = 0.01;
 
-let playerRadius = 0.01;
+let playerRadius = 0.012;
 let bulletRadius = 0.002;
-let playerAcc = 0.005 * (fps / tickRate);
+let playerAcc = 0.005;
+let friction = 0.7;
 
 let width,
   height = undefined;
@@ -94,7 +95,7 @@ io.on('connection', (socket) => {
     height = window.height;
   });
 
-  socket.on('init', ({ window, username, color, score }) => {
+  socket.on('init', ({ window, username, color, mousecontrol, mouse }) => {
     width = window.width;
     height = window.height;
 
@@ -103,48 +104,55 @@ io.on('connection', (socket) => {
       y: Math.random() * (1 - playerRadius) + playerRadius,
       dx: 0,
       dy: 0,
-      mouse: { x: 0, y: 0 },
+      mouse: { x: mouse.x / width, y: mouse.y / height },
       bullets: [],
       lives: 3,
       radius: playerRadius,
       name: username,
       color,
+      mousecontrol,
       playing: true,
       score: 0,
       id: uuid(),
     };
 
     interval = setInterval(() => {
+      const mousex = player.mouse.x;
+      const mousey = player.mouse.y;
+      const playerVector = new Vector(player.x, player.y);
+      const mouseVector = new Vector(mousex, mousey);
+      const diffVector = mouseVector.subtract(playerVector);
+      const normDiffVector = diffVector.scalarMul(1 / diffVector.magnitude);
+
       if (player.playing) {
-        if (keys.a) {
-          player.dx = -playerAcc;
-        } else if (keys.d) {
-          player.dx = playerAcc;
+        if (!player.mousecontrol) {
+          if (keys.a) {
+            player.dx = -playerAcc;
+          } else if (keys.d) {
+            player.dx = playerAcc;
+          } else {
+            player.dx *= friction;
+          }
+
+          if (keys.w) {
+            player.dy = -playerAcc;
+          } else if (keys.s) {
+            player.dy = playerAcc;
+          } else {
+            player.dy *= friction;
+          }
         } else {
-          player.dx = 0;
+          if (diffVector.magnitude > playerRadius * 4 && keys.space) {
+            player.dx = normDiffVector.x * playerAcc;
+            player.dy = normDiffVector.y * playerAcc;
+          } else {
+            player.dx *= friction;
+            player.dy *= friction;
+          }
         }
 
-        if (keys.w) {
-          player.dy = -playerAcc;
-        } else if (keys.s) {
-          player.dy = playerAcc;
-        } else {
-          player.dy = 0;
-        }
-
-        if (keys.space || keys.mousedown) {
+        if (keys.mousedown) {
           if (bulletAvailable && !reloading) {
-            const mousex = player.mouse.x;
-            const mousey = player.mouse.y;
-
-            const mouseVector = new Vector(mousex, mousey);
-            const bulletVector = new Vector(player.x, player.y);
-
-            const diffVector = mouseVector.subtract(bulletVector);
-            const normDiffVector = diffVector.scalarMul(
-              1 / diffVector.magnitude
-            );
-
             const bullet = {
               x: player.x,
               y: player.y,
@@ -200,7 +208,15 @@ io.on('connection', (socket) => {
               const playerVector = new Vector(player.x, player.y);
 
               const distance = bulletVector.subtract(playerVector).magnitude;
-
+              if (distance < playerRadius + bulletRadius + 0.01) {
+                console.log(
+                  Math.sqrt(
+                    Math.pow(bullet.x - player.x, 2) +
+                      Math.pow(bullet.y - player.y, 2)
+                  ),
+                  distance
+                );
+              }
               if (distance < playerRadius + bulletRadius && bullet.isLive) {
                 bullet.isLive = false;
                 otherPlayer.bullets = otherPlayer.bullets.filter(
@@ -222,9 +238,10 @@ io.on('connection', (socket) => {
             }
           }
         }
-        if (player.lives !== 0) {
-        }
       }
+    }, 1000 / fps);
+
+    setInterval(() => {
       socket.emit('game-state', gameState);
     }, 1000 / tickRate);
 
@@ -237,11 +254,12 @@ io.on('connection', (socket) => {
       player.mouse.y = y;
     });
 
-    socket.on('replay', ({ color, name }) => {
+    socket.on('replay', ({ color, mousecontrol }) => {
       player.x = Math.random() * (1 - playerRadius) + playerRadius;
       player.y = Math.random() * (1 - playerRadius) + playerRadius;
       player.playing = true;
       player.lives = 3;
+      player.mousecontrol = mousecontrol;
       player.color = color;
       bulletAvailable = true;
       bulletCount = 0;

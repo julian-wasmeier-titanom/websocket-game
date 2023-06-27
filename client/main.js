@@ -8,6 +8,8 @@ const usernameInput = document.getElementById('username-input');
 const playButton = document.getElementById('play-button');
 const colorContainer = document.getElementById('color-container');
 const scoreboard = document.getElementById('scoreboard');
+const mouseControlInput = document.getElementById('mousecontrol-input');
+const controls = document.getElementById('controls');
 
 const ctx = canvas.getContext('2d');
 
@@ -22,7 +24,7 @@ let initalized = false;
 let lastUserName = undefined;
 let prevPlayerScores = undefined;
 
-const colors = ['#DB488B', '#1F1A70', '#1A0E3E', '#3337C0', '#D854C2'];
+const colors = ['#9b5de5', '#f15bb5', '#fee440', '#00bbf9', '#00f5d4'];
 
 colors.forEach((color, i) => {
   const colorElement = document.createElement('input');
@@ -74,11 +76,17 @@ playButton.addEventListener('click', (e) => {
       window: { width, height },
       username,
       color: colorContainer['colors'].value,
+      mousecontrol: mouseControlInput.checked,
+      mouse: { x: mouse.x, y: mouse.y },
     });
   } else {
-    socket.emit('replay', { color: colorContainer['colors'].value });
+    socket.emit('replay', {
+      color: colorContainer['colors'].value,
+      mousecontrol: mouseControlInput.checked,
+    });
   }
   modal.style.display = 'none';
+  controls.style.display = 'none';
 });
 
 function clearCanvas() {
@@ -97,7 +105,7 @@ function drawPlayer(player) {
 
   ctx.fillStyle = player.color;
   ctx.beginPath();
-  ctx.arc(realX, realY, player.radius * width, 0, Math.PI * 2);
+  ctx.arc(realX, realY, realRadius, 0, Math.PI * 2);
   ctx.fill();
 
   //rendering the lives
@@ -130,8 +138,8 @@ function drawPlayer(player) {
 
   //rendering the bullets
   for (const bullet of player.bullets) {
-    bullet.x += bullet.dx / 2;
-    bullet.y += bullet.dy / 2;
+    bullet.x += bullet.dx;
+    bullet.y += bullet.dy;
     ctx.fillStyle = 'rgba(255,255,255)';
     ctx.beginPath();
     ctx.arc(
@@ -176,8 +184,8 @@ function animate() {
 
     clearCanvas();
     for (const player of gameState.players.filter((player) => player.playing)) {
-      player.x += player.dx / 2;
-      player.y += player.dy / 2;
+      player.x += player.dx;
+      player.y += player.dy;
       drawPlayer(player);
     }
   }
@@ -187,6 +195,7 @@ animate();
 
 function handleGameOver() {
   modal.style.display = 'flex';
+  controls.style.display = 'initial';
 }
 
 socket.on('game-state', (state) => {

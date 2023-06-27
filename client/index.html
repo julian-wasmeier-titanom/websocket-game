@@ -9,11 +9,31 @@
   <body>
     <div id="modal">
       <div class="input-container">
-        Name:
-        <input id="username-input" />
+        <label>
+          Name:
+          <input id="username-input" />
+        </label>
       </div>
       <form id="color-container"></form>
+      <div>
+        <label>
+          <input id="mousecontrol-input" type="checkbox" /> Mouse control</label
+        >
+      </div>
       <button id="play-button">PLAY</button>
+    </div>
+    <div id="controls">
+      <h1>Controls</h1>
+      <h2>keyboard mode</h2>
+      <ul>
+        <li>WASD to move</li>
+        <li>Click to shoot</li>
+      </ul>
+      <h2>mouse mode</h2>
+      <ul>
+        <li>Hold Space + move mouse to move</li>
+        <li>Click to shoot</li>
+      </ul>
     </div>
     <ul id="scoreboard"></ul>
     <canvas id="canvas"></canvas>

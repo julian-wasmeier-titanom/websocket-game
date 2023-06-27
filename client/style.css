@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400&display=swap');
 * {
   box-sizing: border-box;
+  cursor: crosshair;
 }
 body {
   margin: 0;
@@ -10,21 +11,39 @@ body {
   color: white;
 }
 
-#modal {
+#modal,
+#controls {
   position: absolute;
   box-shadow: 7px 7px 0px rgba(255, 255, 255, 0.2);
-
-  width: 20rem;
-  height: 13rem;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   font-family: 'Bebas Neue', sans-serif;
   background-color: #6e6262;
   color: white;
+}
+
+#modal {
+  width: 20rem;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  transform: translate(-50%, -50%);
+}
+
+#controls {
+  min-width: 15%;
+  height: 40%;
+  right: 50px;
+  bottom: 50px;
+  padding: 10px;
+}
+
+#controls > h2 {
+  margin: 0;
+}
+#controls > h1 {
+  text-align: center;
 }
 
 .input-container {
@@ -32,6 +51,7 @@ body {
   display: flex;
   align-items: center;
   font-size: 25px;
+  margin-bottom: 10px;
 }
 
 #username-input {
@@ -39,6 +59,8 @@ body {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 25px;
   padding-left: 10px;
+  border: none;
+  cursor: text;
 }
 
 #play-button {
@@ -58,6 +80,7 @@ body {
 #color-container {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .color {
@@ -89,8 +112,21 @@ body {
 
 .scoreboard-item {
   font-family: 'Bebas Neue', sans-serif;
-  height: 50px;
+  min-height: 50px;
   font-size: 30px;
   border-bottom: 3px solid rgb(51, 49, 49);
   padding-left: 10px;
+}
+
+div > :has(#mousecontrol-input) {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  height: 15px;
+}
+
+#mousecontrol-input {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
 }
