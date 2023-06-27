@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "fullBuild": "cd ../client && vite build && rm -r ../server/dist && cp -r ./dist ../server/dist"
   },
   "keywords": [],
   "author": "",
