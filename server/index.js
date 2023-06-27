@@ -223,7 +223,7 @@ io.on('connection', (socket) => {
         }
       }
       socket.emit('game-state', gameState);
-    }, 1000 / 60);
+    }, 1000 / 40);
 
     gameState.players.push(player);
     socket.emit('id', player.id);
