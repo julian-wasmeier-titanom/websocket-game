@@ -1,6 +1,6 @@
 /** @type {HTMLCanvasElement} */
 import { io } from 'socket.io-client';
-const socket = io('http://localhost:3000', { autoConnect: false });
+const socket = io({ autoConnect: false });
 
 const canvas = document.getElementById('canvas');
 const modal = document.getElementById('modal');
