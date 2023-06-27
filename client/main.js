@@ -174,6 +174,8 @@ function animate() {
 
     clearCanvas();
     for (const player of gameState.players.filter((player) => player.playing)) {
+      player.x += player.dx / 2;
+      player.y += player.dy / 2;
       drawPlayer(player);
     }
   }
