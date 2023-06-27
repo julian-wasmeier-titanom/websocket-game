@@ -208,15 +208,7 @@ io.on('connection', (socket) => {
               const playerVector = new Vector(player.x, player.y);
 
               const distance = bulletVector.subtract(playerVector).magnitude;
-              if (distance < playerRadius + bulletRadius + 0.01) {
-                console.log(
-                  Math.sqrt(
-                    Math.pow(bullet.x - player.x, 2) +
-                      Math.pow(bullet.y - player.y, 2)
-                  ),
-                  distance
-                );
-              }
+
               if (distance < playerRadius + bulletRadius && bullet.isLive) {
                 bullet.isLive = false;
                 otherPlayer.bullets = otherPlayer.bullets.filter(

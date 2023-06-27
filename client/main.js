@@ -138,8 +138,6 @@ function drawPlayer(player) {
 
   //rendering the bullets
   for (const bullet of player.bullets) {
-    bullet.x += bullet.dx;
-    bullet.y += bullet.dy;
     ctx.fillStyle = 'rgba(255,255,255)';
     ctx.beginPath();
     ctx.arc(
@@ -169,29 +167,24 @@ function drawScoreBoard(players) {
   scoreboard.append(...scoreboardItems);
 }
 
-let gameState = undefined;
-function animate() {
-  if (gameState) {
-    const playerScores = gameState.players.map((player) => player.score);
+function animate(state) {
+  if (state) {
+    const playerScores = state.players.map((player) => player.score);
     //only rerender scoreboard if values have changed
     if (
       prevPlayerScores === undefined ||
       playerScores.some((playerScore, i) => playerScore !== prevPlayerScores[i])
     ) {
-      drawScoreBoard(gameState.players);
+      drawScoreBoard(state.players);
     }
     prevPlayerScores = playerScores;
 
     clearCanvas();
-    for (const player of gameState.players.filter((player) => player.playing)) {
-      player.x += player.dx;
-      player.y += player.dy;
+    for (const player of state.players.filter((player) => player.playing)) {
       drawPlayer(player);
     }
   }
-  requestAnimationFrame(animate);
 }
-animate();
 
 function handleGameOver() {
   modal.style.display = 'flex';
@@ -199,7 +192,7 @@ function handleGameOver() {
 }
 
 socket.on('game-state', (state) => {
-  gameState = state;
+  animate(state);
 });
 
 socket.on('id', (ourId) => (id = ourId));
