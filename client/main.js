@@ -1,6 +1,6 @@
 /** @type {HTMLCanvasElement} */
 import { io } from 'socket.io-client';
-const socket = io('http://192.168.188.135:3000', { autoConnect: false });
+const socket = io({ autoConnect: false });
 
 const canvas = document.getElementById('canvas');
 const modal = document.getElementById('modal');
@@ -87,18 +87,17 @@ function clearCanvas() {
 }
 
 function drawPlayer(player) {
-  const realWidth = player.x * width;
-  const realHeight = player.y * height;
+  const realX = player.x * width;
+  const realY = player.y * height;
   const realRadius = player.radius * width;
 
   const liveGap = 5;
   const liveWidth = 5;
   //rendering the player
-  player.x += player.dx;
-  player.y += player.dy;
+
   ctx.fillStyle = player.color;
   ctx.beginPath();
-  ctx.arc(realWidth, realHeight, player.radius * width, 0, Math.PI * 2);
+  ctx.arc(realX, realY, player.radius * width, 0, Math.PI * 2);
   ctx.fill();
 
   //rendering the lives
@@ -113,8 +112,8 @@ function drawPlayer(player) {
 
     const totalLength = player.lives * 5 + (player.lives - 1) * 5;
     ctx.fillRect(
-      realWidth + i * (liveGap + liveWidth) - totalLength / 2,
-      realHeight - realRadius - 10,
+      realX + i * (liveGap + liveWidth) - totalLength / 2,
+      realY - realRadius - 10,
       liveWidth,
       liveWidth
     );
@@ -126,7 +125,7 @@ function drawPlayer(player) {
     ctx.color = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(player.name, realWidth, realHeight - realRadius - 20);
+    ctx.fillText(player.name, realX, realY - realRadius - 20);
   }
 
   //rendering the bullets
@@ -160,29 +159,59 @@ function drawScoreBoard(players) {
   scoreboard.append(...scoreboardItems);
 }
 
-function animate(state) {
-  const playerScores = state.players.map((player) => player.score);
-  //only rerender scoreboard if values have changed
-  if (
-    prevPlayerScores === undefined ||
-    playerScores.some((playerScore, i) => playerScore !== prevPlayerScores[i])
-  ) {
-    drawScoreBoard(state.players);
-  }
-  prevPlayerScores = playerScores;
+let gameState = undefined;
+function animate() {
+  if (gameState) {
+    const playerScores = gameState.players.map((player) => player.score);
+    //only rerender scoreboard if values have changed
+    if (
+      prevPlayerScores === undefined ||
+      playerScores.some((playerScore, i) => playerScore !== prevPlayerScores[i])
+    ) {
+      drawScoreBoard(gameState.players);
+    }
+    prevPlayerScores = playerScores;
 
-  clearCanvas();
-  for (const player of state.players.filter((player) => player.playing)) {
-    drawPlayer(player);
+    clearCanvas();
+    for (const player of gameState.players.filter((player) => player.playing)) {
+      drawPlayer(player);
+    }
   }
+  requestAnimationFrame(animate);
+  let gameState = undefined;
+  function animate() {
+    if (gameState) {
+      const playerScores = gameState.players.map((player) => player.score);
+      //only rerender scoreboard if values have changed
+      if (
+        prevPlayerScores === undefined ||
+        playerScores.some(
+          (playerScore, i) => playerScore !== prevPlayerScores[i]
+        )
+      ) {
+        drawScoreBoard(gameState.players);
+      }
+      prevPlayerScores = playerScores;
+
+      clearCanvas();
+      for (const player of gameState.players.filter(
+        (player) => player.playing
+      )) {
+        drawPlayer(player);
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
 }
+animate();
 
 function handleGameOver() {
   modal.style.display = 'flex';
 }
 
 socket.on('game-state', (state) => {
-  animate(state);
+  gameState = state;
 });
 
 socket.on('id', (ourId) => (id = ourId));

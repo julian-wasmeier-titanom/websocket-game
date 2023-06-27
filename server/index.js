@@ -16,14 +16,17 @@ const io = new Server(server, {
   },
 });
 
+let tickRate = 30;
+let fps = 60;
+
 let players = [];
 let gameState = { players };
 let bulletInterval = 100;
-let bulletVelocity = 0.01;
+let bulletVelocity = 0.01 * (fps / tickRate);
 
 let playerRadius = 0.01;
 let bulletRadius = 0.002;
-let playerAcc = 0.005;
+let playerAcc = 0.005 * (fps / tickRate);
 
 let width,
   height = undefined;
@@ -223,7 +226,7 @@ io.on('connection', (socket) => {
         }
       }
       socket.emit('game-state', gameState);
-    }, 1000 / 40);
+    }, 1000 / tickRate);
 
     gameState.players.push(player);
     socket.emit('id', player.id);
