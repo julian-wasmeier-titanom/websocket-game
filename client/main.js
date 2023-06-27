@@ -1,6 +1,6 @@
 /** @type {HTMLCanvasElement} */
 import { io } from 'socket.io-client';
-const socket = io({ autoConnect: false });
+const socket = io('http://192.168.188.135:3000', { autoConnect: false });
 
 const canvas = document.getElementById('canvas');
 const modal = document.getElementById('modal');
@@ -21,7 +21,6 @@ let id = undefined;
 let initalized = false;
 let lastUserName = undefined;
 let prevPlayerScores = undefined;
-let gameState = { players: [] };
 
 const colors = ['#DB488B', '#1F1A70', '#1A0E3E', '#3337C0', '#D854C2'];
 
