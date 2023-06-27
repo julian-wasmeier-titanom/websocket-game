@@ -161,31 +161,29 @@ function drawScoreBoard(players) {
   scoreboard.append(...scoreboardItems);
 }
 
-function animate() {
-  const playerScores = gameState.players.map((player) => player.score);
+function animate(state) {
+  const playerScores = state.players.map((player) => player.score);
   //only rerender scoreboard if values have changed
   if (
     prevPlayerScores === undefined ||
     playerScores.some((playerScore, i) => playerScore !== prevPlayerScores[i])
   ) {
-    drawScoreBoard(gameState.players);
+    drawScoreBoard(state.players);
   }
   prevPlayerScores = playerScores;
 
   clearCanvas();
-  for (const player of gameState.players.filter((player) => player.playing)) {
+  for (const player of state.players.filter((player) => player.playing)) {
     drawPlayer(player);
   }
-  requestAnimationFrame(animate);
 }
 
 function handleGameOver() {
   modal.style.display = 'flex';
 }
-animate();
 
 socket.on('game-state', (state) => {
-  gameState = state;
+  animate(state);
 });
 
 socket.on('id', (ourId) => (id = ourId));
