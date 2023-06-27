@@ -13,6 +13,7 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
+    "pnpm": "^8.6.5",
     "socket.io-client": "^4.7.0"
   }
 }
