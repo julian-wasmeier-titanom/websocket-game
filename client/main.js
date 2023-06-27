@@ -130,6 +130,8 @@ function drawPlayer(player) {
 
   //rendering the bullets
   for (const bullet of player.bullets) {
+    bullet.x += bullet.dx / 2;
+    bullet.y += bullet.dy / 2;
     ctx.fillStyle = 'rgba(255,255,255)';
     ctx.beginPath();
     ctx.arc(
